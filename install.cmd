@@ -45,13 +45,13 @@ echo Install complete.
 echo Cleaning up the cloned folder...
 set "CLEANUP_SCRIPT=%TEMP%\flow_launcher_toolset_cleanup.cmd"
 set "CLEANUP_MARKER=%ROOT%\installer.lock"
-set "CLEANUP_SCRIPT_NAME_RETRY_LIMIT=10"
+set "CLEANUP_NAME_RETRY_LIMIT=10"
 > "%CLEANUP_MARKER%" echo cleanup
-set /a CLEANUP_SCRIPT_NAME_RETRIES=0
+set /a CLEANUP_NAME_RETRIES=0
 :cleanup_name_check
 if exist "%CLEANUP_SCRIPT%" (
-    set /a CLEANUP_SCRIPT_NAME_RETRIES+=1
-    if !CLEANUP_SCRIPT_NAME_RETRIES! geq !CLEANUP_SCRIPT_NAME_RETRY_LIMIT! (
+    set /a CLEANUP_NAME_RETRIES+=1
+    if !CLEANUP_NAME_RETRIES! geq !CLEANUP_NAME_RETRY_LIMIT! (
         echo Failed to prepare the cleanup script in %TEMP%. Please clear temporary installer files and try again.
         exit /b 1
     )
