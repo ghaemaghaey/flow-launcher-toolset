@@ -6,8 +6,8 @@ color 0A
 set "ROOT=%~dp0"
 for %%I in ("%ROOT%.") do set "ROOT=%%~fI"
 set "TARGET=%APPDATA%\FlowLauncher\Plugins"
-set "TEXTTOOLS=%ROOT%TextTools"
-set "RASMIO=%ROOT%rasmio_tool"
+set "TEXTTOOLS=%ROOT%\TextTools"
+set "RASMIO=%ROOT%\rasmio_tool"
 
 cls
 echo ================================================
@@ -44,7 +44,7 @@ echo.
 echo Install complete.
 echo Cleaning up the cloned folder...
 set "CLEANUP_SCRIPT=%TEMP%\flow_launcher_toolset_cleanup.cmd"
-set "CLEANUP_MARKER=%ROOT%flow-launcher-toolset.install.lock"
+set "CLEANUP_MARKER=%ROOT%\flow-launcher-toolset.install.lock"
 set "CLEANUP_SCRIPT_NAME_RETRY_LIMIT=10"
 > "%CLEANUP_MARKER%" echo cleanup
 set /a CLEANUP_SCRIPT_NAME_RETRIES=0
