@@ -15,7 +15,8 @@ The installer copies both folders into:
 
 `C:\Users\<username>\AppData\Roaming\FlowLauncher\Plugins`
 
-You will be prompted to confirm before installation begins. After confirmation, the folders are copied and the cloned repository folder and installer file are removed automatically.
+You will be prompted to confirm before installation begins. After confirmation, the folders are copied and the entire cloned repository directory is removed automatically.
+After the installer closes, wait until the cloned folder disappears before launching Flow Launcher.
 
 ## Notes
 

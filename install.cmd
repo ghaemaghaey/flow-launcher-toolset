@@ -17,7 +17,8 @@ echo.
 echo Source : %ROOT%
 echo Target : %TARGET%
 echo.
-choice /c YN /m "Proceed with installation? (Copies the folders and deletes this cloned repository afterward)"
+echo This will copy the plugins and delete the repository folder afterward.
+choice /c YN /m "Proceed with installation?"
 if errorlevel 2 (
     echo Installation cancelled.
     exit /b 1
@@ -42,7 +43,49 @@ if errorlevel 8 goto copy_error
 echo.
 echo Install complete.
 echo Cleaning up the cloned folder...
-start "" /min cmd /c "timeout /t 5 /nobreak >nul & rmdir /s /q ""%ROOT%"""
+set "CLEANUP_SCRIPT=%TEMP%\flow_launcher_toolset_cleanup.cmd"
+set "CLEANUP_MARKER=%ROOT%flow-launcher-toolset.install.lock"
+set "CLEANUP_SCRIPT_NAME_RETRY_LIMIT=10"
+> "%CLEANUP_MARKER%" echo cleanup
+set /a CLEANUP_SCRIPT_NAME_RETRIES=0
+:cleanup_name_check
+if exist "%CLEANUP_SCRIPT%" (
+    set /a CLEANUP_SCRIPT_NAME_RETRIES+=1
+    if !CLEANUP_SCRIPT_NAME_RETRIES! geq !CLEANUP_SCRIPT_NAME_RETRY_LIMIT! (
+        echo Failed to prepare the cleanup script in %%TEMP%%.
+        exit /b 1
+    )
+    set "CLEANUP_SCRIPT=%TEMP%\flow_launcher_toolset_cleanup_%RANDOM%.cmd"
+    goto cleanup_name_check
+)
+(
+    echo @echo off
+    echo setlocal EnableExtensions EnableDelayedExpansion
+    echo set "FAIL_REASON="
+    echo set "CLEANUP_RETRY_LIMIT=5"
+    echo set "CLEANUP_RETRY_DELAY=1"
+    echo if not exist "%ROOT%\install.cmd" if not defined FAIL_REASON set "FAIL_REASON=missing install.cmd"
+    echo if not exist "%ROOT%\README.md" if not defined FAIL_REASON set "FAIL_REASON=missing README.md"
+    echo if not exist "%ROOT%\TextTools" if not defined FAIL_REASON set "FAIL_REASON=missing TextTools"
+    echo if not exist "%ROOT%\rasmio_tool" if not defined FAIL_REASON set "FAIL_REASON=missing rasmio_tool"
+    echo if not exist "%CLEANUP_MARKER%" if not defined FAIL_REASON set "FAIL_REASON=missing install marker"
+    echo if defined FAIL_REASON goto cleanup_fail
+    echo set /a RETRIES=0
+    echo :cleanup_try
+    echo rmdir /s /q "%ROOT%" 2^>nul
+    echo if not exist "%ROOT%" goto cleanup_finish
+    echo set /a RETRIES+=1
+    echo if ^!RETRIES^! geq ^!CLEANUP_RETRY_LIMIT^! goto cleanup_finish
+    echo timeout /t ^!CLEANUP_RETRY_DELAY^! /nobreak ^>nul
+    echo goto cleanup_try
+    echo :cleanup_fail
+    echo echo Cleanup skipped: ^!FAIL_REASON^!
+    echo goto cleanup_finish
+    echo :cleanup_finish
+    echo del "%%~f0"
+) > "%CLEANUP_SCRIPT%"
+cd /d "%TEMP%" >nul
+start "" /min cmd /c call "%CLEANUP_SCRIPT%"
 echo Cleanup started in the background.
 echo Done.
 exit /b 0
