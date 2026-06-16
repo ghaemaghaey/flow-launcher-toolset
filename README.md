@@ -13,9 +13,9 @@ This repository contains the Flow Launcher plugin folders:
 
 The installer copies both folders into:
 
-`C:\Users\{username}\AppData\Roaming\FlowLauncher\Plugins`
+`C:\Users\<username>\AppData\Roaming\FlowLauncher\Plugins`
 
-After installation finishes, the cloned repository folder and the installer file are removed automatically.
+You will be prompted to confirm before installation begins. After confirmation, the folders are copied and the cloned repository folder and installer file are removed automatically.
 
 ## Notes
 

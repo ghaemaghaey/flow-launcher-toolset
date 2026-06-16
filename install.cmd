@@ -17,6 +17,11 @@ echo.
 echo Source : %ROOT%
 echo Target : %TARGET%
 echo.
+choice /c YN /m "Proceed with installation? (Copies the folders and deletes this cloned repository afterward)"
+if errorlevel 2 (
+    echo Installation cancelled.
+    exit /b 1
+)
 
 if not exist "%TEXTTOOLS%" goto missing_source
 if not exist "%RASMIO%" goto missing_source
@@ -37,7 +42,8 @@ if errorlevel 8 goto copy_error
 echo.
 echo Install complete.
 echo Cleaning up the cloned folder...
-start "" /b cmd /c "timeout /t 2 /nobreak >nul & rmdir /s /q ""%ROOT%"""
+start "" /min cmd /c "timeout /t 5 /nobreak >nul & rmdir /s /q ""%ROOT%"""
+echo Cleanup started in the background.
 echo Done.
 exit /b 0
 
